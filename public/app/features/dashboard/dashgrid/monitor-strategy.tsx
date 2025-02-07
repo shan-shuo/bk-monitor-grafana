@@ -16,6 +16,7 @@ import MonitorVariablePicker from './monitor-variable';
 export interface MonitorVariableState extends OptionsPickerState {
   showOption: boolean;
 }
+
 interface Props {
   panel?: PanelModel;
   dashboard?: DashboardModel;
@@ -326,6 +327,11 @@ export const MonitorStrategy = ({ panel, dashboard, isOpen, onHideModal, monitor
     }
     setLoading(true);
     const data = await datasource.addRelateStrategy(strategyParams);
+    localStorage.setItem('grafanaKey', JSON.stringify(data));
+    const monitorUrl = `${location.href.split('/grafana')[0]}/?bizId=${
+      (window.grafanaBootData as any).user.orgName
+    }#/strategy-config/add?targets=${encodeURIComponent(JSON.stringify(data))}`;
+    window.open(monitorUrl);
     setLoading(false);
     onHideModal();
   };
